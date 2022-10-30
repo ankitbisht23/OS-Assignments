@@ -15,7 +15,7 @@ int main(int l,char* args[]){
 		if(check>777 || check<111) printf("mkdir: invalid mode ‘%d’\n",check);
 		else{
 			int mode=strtol(cmode,NULL,8);
-			printf("%d \n",mode);
+			
 			for(int i=2;i<l;i++){
 				if(mkdir(args[i],mode)!=0){
 					printf("mkdir: cannot create directory ‘%s’: File exists\n",args[i]);

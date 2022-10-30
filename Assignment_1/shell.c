@@ -5,16 +5,18 @@
 #include<stdlib.h>
 #include<pthread.h>
 
-
+void* thread_execution(void* a);
+void* echo_thread(void* a);
+void* pwd_thread(void* a);
+void* cd_thread(void* a);
 // ********************************** ECHO ************************************************************
 void echo(char *args[], int l){
-	//printf("%d\n",l);
-	
+
 	if(l==1) printf("\n");
 	else if(!strcmp(args[1],"--help") && l==2) printf("--help\n");
 	else if(!strcmp(args[1],"-n")){
 		for(int i=2;i<l;i++){
-			//printf("%s ",args[i]);
+			
 			for(int j=0;j<strlen(args[i]);j++){
 				if(args[i][j]=='"')
 					continue;
@@ -28,7 +30,7 @@ void echo(char *args[], int l){
 	}
 	else if(!strcmp(args[1],"-E")){
 		for(int i=2;i<l;i++){
-			//printf("%s ",args[i]);
+			
 			for(int j=0;j<strlen(args[i]);j++){
 				if(args[i][j]=='"')
 					continue;
@@ -45,7 +47,7 @@ void echo(char *args[], int l){
 	
 	else{
 		for(int i=1;i<l;i++){
-			//printf("%s ",args[i]);
+			
 			for(int j=0;j<strlen(args[i]);j++){
 				if(args[i][j]=='"')
 					continue;
@@ -106,7 +108,7 @@ void cd(char *args[],int l){
 		if(t!=0) printf("cd: %s: No such file or directory\n",args[1]);
 	}
 	else if(args[1][0]=='-') printf("%s: Invalid Option\n",args[1]);
-	
+	else if(l==3) printf("cd: too many arguments\n");
 	else{
 	
 		int t=chdir(args[1]);
@@ -127,109 +129,242 @@ int main(){
    
 		if(strlen(cmd)==1)
 			continue;
-		//	printf("%s\n","enter something");
-		//	printf("%ld\n",strlen(cmd));
-		//	printf("%c",cmd[0]);	
 		
-		
-			//printf("%s",cmd);
-			//printf("%ld\n",strlen(cmd));
 		cmd[strlen(cmd)-1]='\0';
+		char cpy[200]="./";
 		if(!strcmp("exit",cmd))
 			break;
 		int total_len=0;
 		char *args[20];
 		char *p=strtok(cmd," ");
+		strcat(cpy,p);
 		while(p!=NULL){
 			args[total_len]=p;
+			if(total_len && strcmp(p,"&t")!=0){
+				strcat(cpy," ");
+				strcat(cpy,p);
+			}
+				
 			total_len++;
 			p=strtok(NULL," ");
 		}
-			//printf("%s\n",p);
-			//for(int i=0;i<total_len;i++){
-			//	printf("%s\n",args[i]);
-			//}
+			
 		if(!strcmp(args[0],"cd")){
-			//printf("cd com\n");
-			cd(args,total_len);
+			if(!strcmp(args[total_len-1],"&t")){
+				pthread_t th;
+				if(pthread_create(&th,NULL,cd_thread,&cpy)!=0){
+					printf("Error: cannot create tread\n");
+				}
+				else{
+					pthread_join(th,NULL);
+				}
+				
+			}
+			else cd(args,total_len);
 			
 		}
 		else if(!strcmp(args[0],"pwd")){
-			//printf("pwd com\n");
-			pwd(args,total_len);
+			if(!strcmp(args[total_len-1],"&t")){
+				pthread_t th;
+				if(pthread_create(&th,NULL,pwd_thread,&cpy)!=0){
+					printf("Error: cannot create tread\n");
+				}
+				else{
+					pthread_join(th,NULL);
+				}
+				
+			}
+			else pwd(args,total_len);
 		}
 		else if(!strcmp(args[0],"echo")){
-			//printf("echo com\n");
-			echo(args,total_len);
+			if(!strcmp(args[total_len-1],"&t")){
+				pthread_t th;
+				if(pthread_create(&th,NULL,echo_thread,&cpy)!=0){
+					printf("Error: cannot create tread\n");
+				}
+				else{
+					pthread_join(th,NULL);
+				}
+				
+			}
+			else echo(args,total_len);
 			
 		}
 		else if(!strcmp(args[0],"ls")){
 		
-			
+			if(!strcmp(args[total_len-1],"&t")){
+				pthread_t th;
+				if(pthread_create(&th,NULL,thread_execution,&cpy)!=0){
+					printf("Error: cannot create tread\n");
+				}
+				else{
+					pthread_join(th,NULL);
+				}
+				
+			}
+			else{
 			pid_t i=fork();
 			if(i==0){
 				args[total_len]=NULL;
-				execvp("./ls",args);
+				int e=execvp("./ls",args);
+				if(e==-1) printf("Error: cannot execute the command\n");
+				exit(1);
 			}
 			else{
 				pid_t w=wait(NULL);
 				continue;
+			}
 			}
 			
 		}
 		else if(!strcmp(args[0],"date")){
+			if(!strcmp(args[total_len-1],"&t")){
+				pthread_t th;
+				if(pthread_create(&th,NULL,thread_execution,&cpy)!=0){
+					printf("Error: cannot create tread\n");
+				}
+				else{
+					pthread_join(th,NULL);
+				}
+				
+			}
+			else{
 			pid_t i=fork();
 			if(i==0){
 				args[total_len]=NULL;
-				execvp("./date",args);				
+				int e=execvp("./date",args);
+				if(e==-1) printf("Error: cannot execute the command\n");
+				exit(1);
 			}
 			else{
 				pid_t w=wait(NULL);
 				
-				continue;
-				
 			}
-		}
+			}		}
 		else if(!strcmp(args[0],"rm")){
-			pid_t i=fork();
-			if(i==0){
-				args[total_len]=NULL;
-				execvp("./rm",args);
+			if(!strcmp(args[total_len-1],"&t")){
+				pthread_t th;
+				if(pthread_create(&th,NULL,thread_execution,&cpy)!=0){
+					printf("Error: cannot create tread\n");
+				}
+				else{
+					pthread_join(th,NULL);
+				}
 				
 			}
 			else{
-				pid_t w=wait(NULL);
-				continue;
+			pid_t i=fork();
+			if(i==0){
+				args[total_len]=NULL;
+				int e=execvp("./rm",args);
+				if(e==-1) printf("Error: cannot execute the command\n");
+				exit(1);
 			}
-			
-			//printf("rm com\n");
-		}
+			else{
+				pid_t w=wait(NULL);
+				
+			}
+			}		}
 		else if(!strcmp(args[0],"cat")){
-			pid_t i=fork();
-			if(i==0){
-				args[total_len]=NULL;
-				execvp("./cat",args);
+			if(!strcmp(args[total_len-1],"&t")){
+				pthread_t th;
+				if(pthread_create(&th,NULL,thread_execution,&cpy)!=0){
+					printf("Error: cannot create tread\n");
+				}
+				else{
+					pthread_join(th,NULL);
+				}
 				
 			}
 			else{
-				pid_t w=wait(NULL);
-				continue;
+			pid_t i=fork();
+			if(i==0){
+				args[total_len]=NULL;
+				int e=execvp("./cat",args);
+				if(e==-1) printf("Error: cannot execute the command\n");
+				exit(1);
 			}
-		}
+			else{
+				pid_t w=wait(NULL);
+				
+			}
+			}		}
 		else if(!strcmp(args[0],"mkdir")){
-			pid_t i=fork();
-			if(i==0){
-				args[total_len]=NULL;
-				execvp("./mkdir",args);
+			if(!strcmp(args[total_len-1],"&t")){
+				pthread_t th;
+				if(pthread_create(&th,NULL,thread_execution,&cpy)!=0){
+					printf("Error: cannot create tread\n");
+				}
+				else{
+					pthread_join(th,NULL);
+				}
 				
 			}
 			else{
-				pid_t w=wait(NULL);
-				continue;
+			pid_t i=fork();
+			if(i==0){
+				args[total_len]=NULL;
+				int e=execvp("./mkdir",args);
+				if(e==-1) printf("Error: cannot execute the command\n");
+				exit(1);
 			}
+			else{
+				pid_t w=wait(NULL);
+				
+			}
+			}		
 		}
 		else printf("Command '%s' not found\n",args[0]);
+		strcpy(cpy,"\0");
 		
 	}
 	return 0;
 }
+
+void *thread_execution(void* arg){
+	system((char*)arg);
+	
+}
+void* cd_thread(void* a){
+	char cmd[200];
+	strcpy(cmd,(char*)a);
+	int l=0;
+		char *args[20];
+		char *p=strtok(cmd," ");
+		while(p!=NULL){
+			args[l]=p;	
+			l++;
+			p=strtok(NULL," ");
+		}
+	
+	cd(args,l);
+}
+void* echo_thread(void* a){
+	char cmd[200];
+	strcpy(cmd,(char*)a);
+	int l=0;
+		char *args[20];
+		char *p=strtok(cmd," ");
+		while(p!=NULL){
+			args[l]=p;	
+			l++;
+			p=strtok(NULL," ");
+		}
+	
+	echo(args,l);
+}
+void* pwd_thread(void* a){
+	char cmd[200];
+	strcpy(cmd,(char*)a);
+	int l=0;
+		char *args[20];
+		char *p=strtok(cmd," ");
+		while(p!=NULL){
+			args[l]=p;	
+			l++;
+			p=strtok(NULL," ");
+		}
+	
+	pwd(args,l);
+}
+
