@@ -1,0 +1,3 @@
+The thread.c program is creating 3 different threads with different scheduling policy using pthread_setschedparam() function.
+And also changing each thread priority with sched_priority.
+This program show the different time required with different scheduling policy and different priority.

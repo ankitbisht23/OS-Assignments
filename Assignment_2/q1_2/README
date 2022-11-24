@@ -1,0 +1,3 @@
+process.c uses fork() to create child and parent processes.
+as process id of child process is always 0 we can use the child process to call the bash script using execl system call.
+waitpid system call waits for child process to finish and using this we can calculate the time taken by the child process to execute.

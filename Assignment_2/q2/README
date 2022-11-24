@@ -1,0 +1,10 @@
+In order to implement the syscall we need to change in 2 files.
+first add new syscall in linux-***/arch/x86/entry/syscalls/syscall_64.tbl  
+451	common	kernel_2d_memcpy	sys_kernel_2d_memcpy
+second add in linux-***/kernel/sys.c
+here define the funtion SYSCALL_DEFINE4(kernel_2d_memcpy,float *,matrix1,float *,matrix2,int,n,int,m)
+
+the fuction take the syscall number (which is 451 in this case) as first argument.
+second argument is the destination(the matrix in which put the copy data using copy_to_user).
+third argument is the source matrix(from which the date hase to be copied using copy_from_user).
+n is the row number of the matrix and m is the colomn number.
