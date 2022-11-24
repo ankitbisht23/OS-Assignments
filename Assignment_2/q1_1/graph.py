@@ -1,63 +1,25 @@
 import matplotlib.pyplot as plt
-
-f=open("time.txt","r")
-
-de=float(f.readline())
-p1=float(f.readline())
-p2=float(f.readline())
-p3=float(f.readline())
-
-data={'default':de, "priority1":p1, "priority2":p2, "priority3":p3}
-
-x=list(data.keys())
-y=list(data.values())
-
-fig=plt.figure(figsize=(10,5))
-
-plt.bar(x, y, color="red", width=0.4)
-
-plt.xlabel("PRIORITIES")
-plt.ylabel("TIME TAKEN")
-plt.title("For thread A")
-plt.show()
+import numpy as np;
 
 
-#B
-de=float(f.readline())
-p1=float(f.readline())
-p2=float(f.readline())
-p3=float(f.readline())
+other = [9,9,9,8,8]
+rr = [9,9,8,9,8]
+fifo = [19,19,18,17,17]
 
-data={'default':de, "priority1":p1, "priority2":p2, "priority3":p3}
+fig = plt.subplots(figsize =(14, 8))
+ 
 
-x=list(data.keys())
-y=list(data.values())
+b1 = [2,8,14,20,26]
+b2 = [x + 1 for x in b1]
+b3 = [x + 1 for x in b2]
+ 
 
-fig=plt.figure(figsize=(10,5))
-
-plt.bar(x, y, color="blue", width=0.4)
-
-plt.xlabel("PRIORITIES")
-plt.ylabel("TIME TAKEN")
-plt.title("For thread B")
-plt.show()
-
-#C
-de=float(f.readline())
-p1=float(f.readline())
-p2=float(f.readline())
-p3=float(f.readline())
-
-data={'default':de, "priority1":p1, "priority2":p2, "priority3":p3}
-
-x=list(data.keys())
-y=list(data.values())
-
-fig=plt.figure(figsize=(10,5))
-
-plt.bar(x, y, color="green", width=0.4)
-
-plt.xlabel("PRIORITIES")
-plt.ylabel("TIME TAKEN")
-plt.title("For thread C")
+plt.bar(b1, other, color ='r', width = 1, edgecolor ='black', label ='other')
+plt.bar(b2, rr, color ='g', width = 1, edgecolor ='black', label ='rr')
+plt.bar(b3, fifo, color ='b', width = 1, edgecolor ='black', label ='fifo')
+ 
+plt.xlabel('Priority', fontweight ='bold', fontsize = 12)
+plt.ylabel('Time', fontweight ='bold', fontsize = 12)
+ 
+plt.legend()
 plt.show()
