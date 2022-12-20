@@ -1,0 +1,8 @@
+In this question we have to write a kernel module and read the entries of task_struct.
+first the program amod.c is used to read the entries of task_struct. Program amod.c takes the name of process as input from command line using module_param(). Then p(task_strut) is itrated over for_each_process until it is same as the input process. The it prints the process id, group id and used id of the process.
+
+To compile the module commands are:
+make
+sudo insmod amod.ko
+sudo dmesg
+

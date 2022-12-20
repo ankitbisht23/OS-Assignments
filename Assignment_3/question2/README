@@ -1,0 +1,16 @@
+In the question we have to generate 50 random strings of fixed length. the program uses srand to generate random integer between 1 to 26 which is then used to generate random string.All the strings are stored in arr. and all string have their ID(index+1) in the start.
+IPC is implemented 3 different ways:
+
+1. socket: program P2 use funtion socket() which creates a new socket and return a descriptor which is our socket(socket1). Then the function bind() assigns an address to the socket. The listen() is used which is used for connection-oriented sockets to prepare them for incoming connections. then the function accept() is used which is use for a connection-oriented socket that is listening when there is pending connection. The return value(connection) is the descriptor of the new socket that is created for the new connection. P2 also connect to the socket using connect. program P1 sends 5 strings using write() and P1 reads them using read() and sends the string with highest ID back to P1. P1 reads the strings and sends next 5 strings. This process is repeated until P1 sends all the strings.
+To run the socket programs commands are:
+make
+// after running make open two seperate terminals and write one command in each terminal:
+./p2
+./p1
+
+2. fifo: Program P1 create two pipe named pipe1 and pipe2. pipe1 is for sending data from program P1 to P2 and pipe2 is for sending data from program P2 to P1.Program P1 starts sending 5 strings to P2 using write() and wait for P2 to send the string with highest ID. Program P2 also waits for P1 to send 5 strings and after receiving the strings sends the string with highest ID.This process is repeated until P1 sends all the strings.
+To run the fifo programs commands are:
+make
+// after running make open two seperate terminals and write one command in each terminal:
+./p1
+./p2
