@@ -32,6 +32,8 @@ int main(){
 
 void* Philosopher(void* n){
 	int num=*(int*)n;
+	printf("Philosopher %d is thinking\n",num);
+	sleep(1);
 	printf("Philosopher %d wants to eat\n",num);
 	if(num%2==0){
 		pickleft(num);
@@ -46,6 +48,8 @@ void* Philosopher(void* n){
 	releaseright(num);
 	releaseleft(num);
 	releasesauce(num);
+	printf("Philosopher %d is thinking\n",num);
+	
 	
 }
 void eat(int num){
